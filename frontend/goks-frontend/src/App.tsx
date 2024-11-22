@@ -1,8 +1,11 @@
-import Button from "react-bootstrap/Button";
+import MyNavbar from "./components/Navbar";
+import FormLayout from "./components/FormLayout";
+
 function App() {
     return (
         <>
-            <Button>hello</Button>
+            <MyNavbar />
+            <FormLayout />
         </>
     );
 }
