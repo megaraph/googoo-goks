@@ -17,7 +17,7 @@ function MyNavbar() {
                             height="30"
                             className="d-inline-block align-top me-2" // Add margin to the right
                         />
-                        GOKS
+                        GOKS by Googoo
                     </Navbar.Brand>
                 </Container>
             </Navbar>

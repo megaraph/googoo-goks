@@ -151,8 +151,11 @@ def download_csv(filename):
 
     # Check if the file exists
     if os.path.exists(file_path):
-        return send_file(
-            file_path, as_attachment=True, mimetype="text/csv", download_name=filename
-        )
+        # Read the CSV file and convert it to a list of dictionaries
+        with open(file_path, mode="r", encoding="utf-8") as csvfile:
+            reader = csv.DictReader(csvfile)
+            data = [row for row in reader]  # Convert to list of dictionaries
+
+        return jsonify(data)  # Return JSON response
     else:
         return jsonify({"error": "File not found."}), 404

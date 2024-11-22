@@ -8,6 +8,16 @@ interface Metrics {
     possibly_ai_essays: number;
 }
 
+// Define the structure of the data you expect in the JSON response
+interface EssayData {
+    "AI Score": string;
+    Essay: string;
+    "Phase 1 Score": string;
+    "Phase 2 Score": string;
+    "Plagiarism Score": string;
+    Valid: string;
+}
+
 const FormLayout: React.FC = () => {
     const [sourceMaterial, setSourceMaterial] = useState("");
     const [reflectionSheet, setReflectionSheet] = useState<File | null>(null);
@@ -47,6 +57,64 @@ const FormLayout: React.FC = () => {
             console.error("Error submitting form:", error);
         } finally {
             setIsLoading(false); // Reset loading state after the request is complete
+        }
+    };
+
+    // Function to convert JSON to CSV
+    const jsonToCsv = (json: Array<EssayData>) => {
+        // Extract headers from the first object
+        const headers = Object.keys(json[0]).join(",");
+
+        // Map each object to a CSV row
+        const rows = json.map((row) =>
+            Object.values(row)
+                .map((value) => {
+                    // Escape double quotes by replacing them with two double quotes
+                    const escapedValue = value.replace(/"/g, '""');
+                    return `"${escapedValue}"`; // Wrap values in quotes to handle commas and escape quotes
+                })
+                .join(",")
+        );
+
+        // Combine headers and rows
+        return [headers, ...rows].join("\n");
+    };
+
+    const handleDownloadCsv = async () => {
+        const csvUrl = "http://127.0.0.1:5000/download_csv/scored_essays.csv";
+        if (!csvUrl) {
+            console.error("CSV URL is not available.");
+            return; // Exit if csvUrl is null
+        }
+
+        try {
+            const response = await fetch(csvUrl); // Fetch the JSON data
+            if (response.ok) {
+                const jsonData = await response.json(); // Parse the JSON response
+
+                // Convert JSON to CSV
+                const csv = jsonToCsv(jsonData); // Call the function to convert JSON to CSV
+
+                // Create a Blob from the CSV string
+                const blob = new Blob([csv], { type: "text/csv" });
+                const url = window.URL.createObjectURL(blob);
+
+                // Create a link element and trigger the download
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "report.csv"; // Specify the filename
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url); // Clean up
+            } else {
+                console.error(
+                    "Error fetching CSV data:",
+                    await response.json()
+                );
+            }
+        } catch (error) {
+            console.error("Error downloading CSV:", error);
         }
     };
 
@@ -135,13 +203,12 @@ const FormLayout: React.FC = () => {
                                 </Card.Text>
                                 {csvUrl && (
                                     <div className="mt-3">
-                                        <a
-                                            href={csvUrl}
+                                        <button
                                             className="btn btn-success"
-                                            download
+                                            onClick={handleDownloadCsv}
                                         >
                                             Download full report
-                                        </a>
+                                        </button>
                                     </div>
                                 )}
                             </Card.Body>
