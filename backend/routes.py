@@ -1,6 +1,25 @@
-from app import app, db
+import os
+from app import app
 from flask import request, jsonify
+from utils import (
+    get_phase_one,
+    get_phase_two,
+    get_phase_score,
+    get_ai_score,
+    get_plagiarism_score,
+)
 import csv
+
+winston_key = os.getenv("WINSTON_API_KEY")
+WINSTON_headers = {
+    "Authorization": f"Bearer {winston_key}",
+    "Content-Type": "application/json",
+}
+
+
+@app.route("/api/process_essay", methods=["GET"])
+def get_page():
+    return jsonify({"msg": "hello"})
 
 
 @app.route("/api/process_essay", methods=["POST"])
@@ -14,24 +33,48 @@ def process_essay():
         csv_reader = csv.reader(
             reflection_sheet_file.stream.read().decode("utf-8").splitlines()
         )
-        for row in csv_reader:
-            reflection_sheet_content.append(
-                ", ".join(row)
-            )  # Join each row into a string
 
-        # Combine all rows into a single string or process them as needed
-        reflection_sheet = "\n".join(reflection_sheet_content)
+        # Read the first row as the question
+        question = next(csv_reader)[0]  # Assuming the first row contains the question
+
+        # Prepare to store results
+        results = []
+
+        # Process each essay
+        for row in csv_reader:  # Skip the first row (the question)
+            print("Extracting data...")
+            essay = row[0]  # Assuming the essay is in the first column
+
+            # Get scores for each phase and plagiarism
+            phase_1_score = get_phase_score(question, essay, phase=1)
+            phase_2_score = get_phase_score(
+                question, essay, source_material=source_material, phase=2
+            )
+            plagiarism_score = get_plagiarism_score(essay, WINSTON_headers)
+            ai_score = get_ai_score(essay, WINSTON_headers)
+
+            # Append results as a dictionary
+            results.append(
+                {
+                    "essay": essay,
+                    "phase_1_score": phase_1_score,
+                    "phase_2_score": phase_2_score,
+                    "plagiarism_score": plagiarism_score,
+                    "ai_score": ai_score,
+                }
+            )
+
+        # Return the results as JSON
+        return (
+            jsonify(
+                {
+                    "question": question,
+                    "results": results,
+                    "message": "Essays processed successfully!",
+                }
+            ),
+            200,
+        )
+
     else:
         return jsonify({"error": "Reflection sheet file is required."}), 400
-
-    # Here you can add any processing logic or just return the received data for testing
-    return (
-        jsonify(
-            {
-                "source_material": source_material,
-                "reflection_sheet": reflection_sheet,
-                "message": "Data received successfully!",
-            }
-        ),
-        200,
-    )
