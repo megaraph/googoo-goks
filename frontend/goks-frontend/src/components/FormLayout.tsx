@@ -1,10 +1,19 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
+
+interface Metrics {
+    total_essays: number;
+    valid_essays: number;
+    invalid_essays: number;
+    possibly_ai_essays: number;
+}
 
 const FormLayout: React.FC = () => {
     const [sourceMaterial, setSourceMaterial] = useState("");
     const [reflectionSheet, setReflectionSheet] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState(false); // Loading state
+    const [metrics, setMetrics] = useState<Metrics | null>(null); // State to hold metrics
+    const [csvUrl, setCsvUrl] = useState<string | null>(null); // State to hold CSV URL
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault(); // Prevent the default form submission
@@ -28,6 +37,8 @@ const FormLayout: React.FC = () => {
             if (response.ok) {
                 const result = await response.json();
                 console.log("Success:", result);
+                setMetrics(result.metrics); // Set metrics from the response
+                setCsvUrl(result.csv_url); // Set CSV URL from the response
             } else {
                 const error = await response.json();
                 console.error("Error:", error);
@@ -103,8 +114,42 @@ const FormLayout: React.FC = () => {
                     </Button>
                 </Col>
             </Row>
+
+            {/* Display Metrics and Download Link */}
+            {metrics && (
+                <Row className="mt-4">
+                    <Col md={12}>
+                        <Card>
+                            <Card.Body>
+                                <Card.Title>Metrics</Card.Title>
+                                <Card.Text>
+                                    <p>Total Essays: {metrics.total_essays}</p>
+                                    <p>Valid Essays: {metrics.valid_essays}</p>
+                                    <p>
+                                        Invalid Essays: {metrics.invalid_essays}
+                                    </p>
+                                    <p>
+                                        Possibly AI Essays:{" "}
+                                        {metrics.possibly_ai_essays}
+                                    </p>
+                                </Card.Text>
+                                {csvUrl && (
+                                    <div className="mt-3">
+                                        <a
+                                            href={csvUrl}
+                                            className="btn btn-success"
+                                            download
+                                        >
+                                            Download full report
+                                        </a>
+                                    </div>
+                                )}
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            )}
         </Container>
     );
 };
-
 export default FormLayout;
