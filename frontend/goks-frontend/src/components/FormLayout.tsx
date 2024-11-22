@@ -149,6 +149,7 @@ const FormLayout: React.FC = () => {
                             style={{ height: "50%", resize: "none" }}
                             value={sourceMaterial}
                             onChange={(e) => setSourceMaterial(e.target.value)} // Update state on change
+                            className="shadow"
                         />
                     </Form.Group>
                 </Col>
@@ -171,6 +172,7 @@ const FormLayout: React.FC = () => {
                         </p>
                         <Form.Control
                             type="file"
+                            className="shadow"
                             accept=".csv" // Restrict file type to CSV
                             onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>
