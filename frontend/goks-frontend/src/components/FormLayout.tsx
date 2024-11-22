@@ -133,12 +133,18 @@ const FormLayout: React.FC = () => {
                         controlId="sourceMaterial"
                         style={{ width: "100%" }}
                     >
-                        <Form.Label style={{ fontSize: "24px" }}>
-                            Source Material
+                        <Form.Label
+                            style={{ fontSize: "24px" }}
+                            className="fw-bold fs-3"
+                        >
+                            1. Source Material
                         </Form.Label>
+                        <p className="fs-6 fst-italic text-muted">
+                            Copy and paste the lesson plan used in the seminar.
+                        </p>
                         <Form.Control
                             as="textarea"
-                            rows={15}
+                            rows={25}
                             placeholder="Enter your source material here..."
                             style={{ height: "50%", resize: "none" }}
                             value={sourceMaterial}
@@ -153,9 +159,16 @@ const FormLayout: React.FC = () => {
                     className="d-flex flex-column align-items-start justify-content-center ps-5"
                 >
                     <Form.Group controlId="fileUpload" className="mb-3">
-                        <Form.Label style={{ fontSize: "18px" }}>
-                            Upload your reflection sheets here (.csv)
+                        <Form.Label
+                            style={{ fontSize: "18px" }}
+                            className="fw-bold fs-3"
+                        >
+                            2. Upload reflections (.csv)
                         </Form.Label>
+                        <p className="fs-6 fst-italic text-muted">
+                            Process a csv file of your user reflections that
+                            answer your question.
+                        </p>
                         <Form.Control
                             type="file"
                             accept=".csv" // Restrict file type to CSV
@@ -189,16 +202,19 @@ const FormLayout: React.FC = () => {
                     <Col md={12}>
                         <Card>
                             <Card.Body>
-                                <Card.Title>Metrics</Card.Title>
+                                <Card.Title className="fw-semibold">
+                                    Metrics
+                                </Card.Title>
                                 <Card.Text>
-                                    <p>Total Essays: {metrics.total_essays}</p>
-                                    <p>Valid Essays: {metrics.valid_essays}</p>
-                                    <p>
-                                        Invalid Essays: {metrics.invalid_essays}
+                                    <p>Total Essays: {14}</p>
+                                    <p className="text-success">
+                                        Valid Essays: {14}
                                     </p>
-                                    <p>
-                                        Possibly AI Essays:{" "}
-                                        {metrics.possibly_ai_essays}
+                                    <p className="text-danger">
+                                        Invalid Essays: {14}
+                                    </p>
+                                    <p className="text-warning">
+                                        Possibly AI Essays: {14}
                                     </p>
                                 </Card.Text>
                                 {csvUrl && (

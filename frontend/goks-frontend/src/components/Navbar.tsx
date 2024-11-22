@@ -4,7 +4,7 @@ import Navbar from "react-bootstrap/Navbar";
 function MyNavbar() {
     return (
         <>
-            <Navbar className="bg-body-tertiary">
+            <Navbar className="bg-body-tertiary shadow">
                 <Container className="d-flex justify-content-center">
                     <Navbar.Brand
                         href="#home"
@@ -12,12 +12,12 @@ function MyNavbar() {
                     >
                         <img
                             alt=""
-                            src="/img/logo.svg"
+                            src="src/img/logo.png"
                             width="30"
                             height="30"
                             className="d-inline-block align-top me-2" // Add margin to the right
                         />
-                        GOKS by Googoo
+                        <div className="fw-semibold">GOKS by Googoo</div>
                     </Navbar.Brand>
                 </Container>
             </Navbar>
