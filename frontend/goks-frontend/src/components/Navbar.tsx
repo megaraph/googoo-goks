@@ -4,7 +4,7 @@ import Navbar from "react-bootstrap/Navbar";
 function MyNavbar() {
     return (
         <>
-            <Navbar className="bg-body-tertiary shadow">
+            <Navbar className="bg-body-tertiary shadow-sm">
                 <Container className="d-flex justify-content-center">
                     <Navbar.Brand
                         href="#home"

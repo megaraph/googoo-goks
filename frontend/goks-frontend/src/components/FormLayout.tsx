@@ -167,8 +167,8 @@ const FormLayout: React.FC = () => {
                             2. Upload reflections (.csv)
                         </Form.Label>
                         <p className="fs-6 fst-italic text-muted">
-                            Process a csv file of your user reflections that
-                            answer your question.
+                            Provide a CSV file of user reflections that answer a
+                            question.
                         </p>
                         <Form.Control
                             type="file"
