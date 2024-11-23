@@ -208,15 +208,16 @@ const FormLayout: React.FC = () => {
                                     Metrics
                                 </Card.Title>
                                 <Card.Text>
-                                    <p>Total Essays: {14}</p>
+                                    <p>Total Essays: {metrics.total_essays}</p>
                                     <p className="text-success">
-                                        Valid Essays: {14}
+                                        Valid Essays: {metrics.valid_essays}
                                     </p>
                                     <p className="text-danger">
-                                        Invalid Essays: {14}
+                                        Invalid Essays: {metrics.invalid_essays}
                                     </p>
                                     <p className="text-warning">
-                                        Possibly AI Essays: {14}
+                                        Possibly AI Essays:{" "}
+                                        {metrics.possibly_ai_essays}
                                     </p>
                                 </Card.Text>
                                 {csvUrl && (
